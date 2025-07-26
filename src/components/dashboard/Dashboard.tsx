@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
+import { Container, Grid, Card, Title, Group } from "@mantine/core";
 import { DashboardContextValue, WidgetProps } from "../../types/dashboard";
-import { cn } from "../../utils/cn";
 
 interface DashboardProps {
   layout?: "grid" | "flex";
@@ -35,26 +35,23 @@ export const Dashboard: DashboardComponent = ({
   className,
   children,
 }: DashboardProps) => {
-  const spacingClasses = {
-    sm: "gap-4",
-    md: "gap-6",
-    lg: "gap-8",
+  const spacingMap = {
+    sm: "sm",
+    md: "md",
+    lg: "lg",
   };
 
   return (
     <DashboardContext.Provider value={{ layout, spacing, isLoading }}>
-      <div
-        className={cn(
-          "w-full",
-          layout === "grid" &&
-            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12",
-          layout === "flex" && "flex flex-wrap",
-          spacingClasses[spacing],
-          className
+      <Container size="xl" className={className ?? ""}>
+        {layout === "grid" ? (
+          <Grid gutter={spacingMap[spacing]}>{children}</Grid>
+        ) : (
+          <Group gap={spacingMap[spacing]} style={{ flexWrap: "wrap" }}>
+            {children}
+          </Group>
         )}
-      >
-        {children}
-      </div>
+      </Container>
     </DashboardContext.Provider>
   );
 };
@@ -67,18 +64,12 @@ Dashboard.Header = function DashboardHeader({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={cn(
-        "col-span-full mb-6 flex items-center justify-between,",
-        className
-      )}
-    >
+    <Group justify="space-between" mb="xl" className={className ?? ""}>
       {children}
-    </div>
+    </Group>
   );
 };
 
-// Title
 Dashboard.Title = function DashboardTitle({
   className,
   children,
@@ -87,9 +78,9 @@ Dashboard.Title = function DashboardTitle({
   children: React.ReactNode;
 }) {
   return (
-    <h1 className={cn("text-3xl font-bold text-gray-900", className)}>
+    <Title order={1} size="h1" className={className ?? ""}>
       {children}
-    </h1>
+    </Title>
   );
 };
 
@@ -101,9 +92,9 @@ Dashboard.Actions = function DashboardActions({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("flex items-center space-x-4", className)}>
+    <Group gap="md" className={className ?? ""}>
       {children}
-    </div>
+    </Group>
   );
 };
 
@@ -112,26 +103,43 @@ Dashboard.Widget = function DashboardWidget({
   children,
   className,
 }: WidgetProps) {
-  const { layout, isLoading } = useDashboard();
-  const spanClasses = {
-    1: "lg:col-span-3",
-    2: "lg:col-span-6",
-    3: "lg:col-span-9",
-    4: "lg:col-span-12",
+  const { layout } = useDashboard();
+  const spanMap = {
+    1: 3,
+    2: 6,
+    3: 9,
+    4: 12,
   };
 
+  if (layout === "grid") {
+    return (
+      <Grid.Col
+        span={{ base: 12, md: 6, lg: spanMap[span as keyof typeof spanMap] }}
+      >
+        <Card
+          shadow="sm"
+          padding="lg"
+          radius="md"
+          withBorder
+          className={className ?? ""}
+        >
+          {children}
+        </Card>
+      </Grid.Col>
+    );
+  }
+
   return (
-    <div
-      className={cn(
-        "bg-white rounded-lg shadow-sm border border-gray-200 p-6",
-        layout === "grid" && spanClasses[span as keyof typeof spanClasses],
-        layout === "flex" && "flex-1 min-w-[300px]",
-        isLoading && "animate-pulse",
-        className
-      )}
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      className={className ?? ""}
+      style={{ flex: "1 1 300px" }}
     >
       {children}
-    </div>
+    </Card>
   );
 };
 
@@ -143,21 +151,15 @@ Dashboard.Grid = function DashboardGrid({
   children: React.ReactNode;
 }) {
   const { spacing } = useDashboard();
-  const spacingClasses = {
-    sm: "gap-4",
-    md: "gap-6",
-    lg: "gap-8",
+  const spacingMap = {
+    sm: "sm",
+    md: "md",
+    lg: "lg",
   };
 
   return (
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12",
-        spacingClasses[spacing],
-        className
-      )}
-    >
+    <Grid gutter={spacingMap[spacing]} className={className ?? ""}>
       {children}
-    </div>
+    </Grid>
   );
 };
