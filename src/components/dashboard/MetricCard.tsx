@@ -1,5 +1,4 @@
 import { LucideIcon } from "lucide-react";
-import { Card, Group, Stack, Text } from "@mantine/core";
 
 interface MetricCardProps {
   title: string;
@@ -11,33 +10,45 @@ interface MetricCardProps {
   };
   color?: "blue" | "green" | "red" | "purple";
 }
-const MetricCard: React.FC<MetricCardProps> = ({
+export const MetricCard: React.FC<MetricCardProps> = ({
   title,
   value,
   icon: Icon,
   color = "blue",
+  trend,
 }: MetricCardProps) => {
-  const colorMap = {
-    blue: "#1c7ed6",
-    green: "#37b24d",
-    red: "#f03e3e",
-    purple: "#9775fa",
+  const colorClasses = {
+    blue: "text-blue-500 bg-blue-50",
+    green: "text-green-500 bg-green-50",
+    red: "text-red-500 bg-red-50",
+    purple: "text-purple-500 bg-purple-50",
   };
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Group>
-        <Icon size={32} color={colorMap[color as keyof typeof colorMap]} />
-        <Stack gap="xs">
-          <Text size="sm" fw={500} c="dimmed">
-            {title}
-          </Text>
-          <Text size="xl" fw={700}>
-            {value}
-          </Text>
-        </Stack>
-      </Group>
-    </Card>
+    <div className="space-y-4">
+      <div className="flex items-center space-x-3">
+        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+          <Icon className="w-6 h-6" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        </div>
+      </div>
+
+      {trend && (
+        <div className="flex items-center text-sm">
+          <span
+            className={`font-medium ${
+              trend.direction === "up" ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {trend.direction === "up" ? "↗" : "↘"} {Math.abs(trend.value)}%
+          </span>
+          <span className="text-gray-500 ml-2">vs last week</span>
+        </div>
+      )}
+    </div>
   );
 };
 

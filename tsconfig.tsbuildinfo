@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/dashboard/dashboard.tsx","./src/components/dashboard/metriccard.tsx","./src/hooks/usemockwebsocket.ts","./src/hooks/userealtimedata.ts","./src/types/dashboard.ts","./src/types/websocket.ts","./src/utils/cn.ts"],"version":"5.8.3"}
